@@ -6,7 +6,7 @@ use App\Models\Task;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 
-interface TaskRepositoryInterface
+interface BaseRepositoryInterface
 {
     /**
      * Get all tasks.
@@ -16,12 +16,12 @@ interface TaskRepositoryInterface
     /**
      * Get a task by ID.
      */
-    public function getById(Model $model): ?Task;
+    public function getById(Model $model): ?Model;
 
     /**
      * Create a new task.
      */
-    public function create(array $data): Task;
+    public function create(array $data): Model;
 
     /**
      * Update an existing task.
@@ -41,5 +41,5 @@ interface TaskRepositoryInterface
     /**
      * Mark a task as completed.
      */
-    public function complete(Model $model): ?Task;
+    public function complete(Model $model): ?Model;
 }
