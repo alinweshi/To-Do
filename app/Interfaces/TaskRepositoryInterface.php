@@ -2,20 +2,44 @@
 
 namespace App\Interfaces;
 
+use App\Models\Task;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
 
 interface TaskRepositoryInterface
 {
-    public function getAllTasks(): mixed;
+    /**
+     * Get all tasks.
+     */
+    public function getAll(): Collection;
 
-    public function createTask(array $data): mixed;
+    /**
+     * Get a task by ID.
+     */
+    public function getById(Model $model): ?Task;
 
-    public function updateTask(int $taskId, array $data): mixed;
+    /**
+     * Create a new task.
+     */
+    public function create(array $data): Task;
 
-    public function deleteTask(int $taskId): mixed;
+    /**
+     * Update an existing task.
+     */
+    public function update(Model $model, array $data): bool;
 
-    public function getTaskById(int $taskId): mixed;
+    /**
+     * Delete a task.
+     */
+    public function delete(Model $model): bool;
 
-    public function restoreTask(int $taskId): mixed;
+    /**
+     * Restore a soft-deleted task.
+     */
+    public function restore(Model $model): bool;
 
-    public function completeTask(int $taskId): mixed;
+    /**
+     * Mark a task as completed.
+     */
+    public function complete(Model $model): ?Task;
 }
