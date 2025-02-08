@@ -1,54 +1,61 @@
 <?php
+
 namespace App\Repositories;
 
-use App\Interfaces\TaskRepositoryInterface;
+use App\Models\Task;
 use Illuminate\Database\Eloquent\Model;
+use App\Interfaces\TaskRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 
 abstract class AbstractTaskRepository implements TaskRepositoryInterface
 {
-protected Model $model;
+    protected Model $model;
 
-public function __construct(Model $model)
-{
-$this->model = $model;
-}
+    public function __construct(Model $model)
+    {
+        $this->model = $model;
+    }
 
-public function getAllTasks(): mixed
-{
-return $this->model->all();
-}
 
-public function createTask(array $data): mixed
-{
-return $this->model->create($data);
-}
 
-public function updateTask(int $taskId, array $data): mixed
-{
-$task = $this->model->find($taskId);
-return $task ? $task->update($data) : null;
-}
+    public function getAll(): Collection
+    {
+        return $this->model->all();
+    }
+    public function getById(Model $model): ?Task
+    {
+        // dd($model);
+        // return new ModelResource($this->model);
+        return $model;
+    }
+    public function create(array $data): Task
+    {
+        return $this->model->create($data);
+    }
 
-public function deleteTask(int $taskId): mixed
-{
-$task = $this->model->find($taskId);
-return $task ? $task->delete() : null;
-}
+    public function update(Model $model, array $data): bool
+    {
+        return $model->update($data);
+    }
 
-public function getTaskById(int $taskId): mixed
-{
-return $this->model->find($taskId);
-}
+    public function delete(Model $model): bool
+    {
+        return $model->delete();
+    }
 
-public function restoreTask(int $taskId): mixed
-{
-$task = $this->model->withTrashed()->find($taskId);
-return $task ? $task->restore() : null;
-}
+    public function restore(Model $model): bool
+    {
+        $task = $this->model->onlyTrashed()->find($model);
+        return $task ? $task->restore() : false;
+    }
 
-public function completeTask(int $taskId): mixed
-{
-$task = $this->model->find($taskId);
-return $task ? $task->update(['completed_at' => now()]) : null;
-}
+    public function complete(Model $model): ?Task
+    {
+        $task = $this->model->find($model);
+        if ($task) {
+            $task->update(['completed' => true]);
+            return $task;
+        }
+        return false;
+    }
 }

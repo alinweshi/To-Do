@@ -2,64 +2,74 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+
+use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\TaskResource;
+use Illuminate\Support\Facades\Auth;
+use App\Interfaces\TaskRepositoryInterface;
+use App\Http\Requests\Tasks\CreateTaskRequest;
+use App\Interfaces\BaseReadRepositoryInterface;
+use App\Interfaces\BaseWriteRepositoryInterface;
 
 class TaskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct(private TaskRepositoryInterface $taskRepository) {}
+
     public function index()
     {
-        //
+        return response()->json($this->taskRepository->getAll());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(CreateTaskRequest $request)
     {
-        //
+        $user_id = Auth::id();
+        // dd($user_id);
+        $validated = $request->validated();
+        $validated['user_id'] = $user_id;
+        // dd($validated);
+        // Debugging: Check the validated data
+        Log::info('Validated Data:', $validated);
+
+        $task = $this->taskRepository->create($validated);
+
+        // Debugging: Check if status is present after creation
+        Log::info('Created Task:', $task->toArray());
+
+        return response()->json(['message' => 'Task created successfully', 'task' => new TaskResource($task)], 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function show(Task $task)
     {
-        //
+        $task = $this->taskRepository->getById($task);
+
+        return new TaskResource($task);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Task $task, CreateTaskRequest $request)
     {
-        //
+        // dd($task);
+        $validated = $request->validated();
+        $updated = $this->taskRepository->update($task, $validated);
+
+        return $updated ? response()->json(['message' => 'Task updated successfully']) :
+            response()->json(['error' => 'Task not found'], 404);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function destroy(task $task)
     {
-        //
-    }
+        $deleted = $this->taskRepository->delete($task);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
+        return $deleted ? response()->json(['message' => 'Task deleted successfully']) :
+            response()->json(['error' => 'Task not found'], 404);
     }
+    // public function restore($id)
+    // {
+    //     $restored = $this->taskRepository->restoreTask($id);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    //     return $restored ? response()->json(['message' => 'Task restored successfully']) :
+    //         response()->json(['error' => 'Task not found'], 404);
+    // }
 }
