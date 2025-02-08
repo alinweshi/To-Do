@@ -2,12 +2,12 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\BaseReadRepositoryInterface;
+use App\Models\Task;
 use Illuminate\Database\Eloquent\Model;
-use App\Interfaces\TaskRepositoryInterface;
-use App\Interfaces\BaseWriteRepositoryInterface;
+use App\Interfaces\BaseRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 
-abstract class AbstractModelRepository implements BaseWriteRepositoryInterface, BaseReadRepositoryInterface
+abstract class AbstractModelRepository implements BaseRepositoryInterface
 {
     protected Model $model;
 
@@ -16,31 +16,46 @@ abstract class AbstractModelRepository implements BaseWriteRepositoryInterface, 
         $this->model = $model;
     }
 
-    public function getAllModels(): mixed
+
+
+    public function getAll(): Collection
     {
         return $this->model->all();
     }
-
-    public function createModel($data): mixed
+    public function getById(Model $model): ?Model
+    {
+        // dd($model);
+        // return new ModelResource($this->model);
+        return $model;
+    }
+    public function create(array $data): Model
     {
         return $this->model->create($data);
     }
 
-    public function updateModel($model, $data): mixed
+    public function update(Model $model, array $data): bool
     {
-        $this->model = $model;
-        return $this->model->update($data);
+        return $model->update($data);
     }
 
-
-    public function deleteModel($model): mixed
+    public function delete(Model $model): bool
     {
-        $this->model = $model;
-        return $this->model->delete();
+        return $model->delete();
     }
 
-    public function getModelById($model): mixed
+    public function restore(Model $model): bool
     {
-        return $this->model->find($model);
+        $task = $this->model->onlyTrashed()->find($model);
+        return $task ? $task->restore() : false;
+    }
+
+    public function complete(Model $model): ?Model
+    {
+        $task = $this->model->find($model);
+        if ($task) {
+            $task->update(['completed' => true]);
+            return $task;
+        }
+        return false;
     }
 }

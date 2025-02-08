@@ -6,7 +6,7 @@ namespace App\Repositories;
 use App\Models\Task;
 use App\Repositories\AbstractModelRepository;
 
-class TaskRepository extends AbstractTaskRepository
+class TaskRepository extends AbstractModelRepository
 {
     public function __construct(public Task $task)
     {

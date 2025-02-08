@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\TaskController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\UserAuthController;
 
 Route::get('/user', function (Request $request) {
@@ -15,3 +16,4 @@ Route::prefix('users')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->apiResource('tasks', TaskController::class);
+Route::middleware('auth:sanctum')->apiResource('categories', CategoryController::class);
