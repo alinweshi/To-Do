@@ -13,9 +13,4 @@ class TaskRepository extends AbstractModelRepository
         // dd($task);
         parent::__construct($task);
     }
-    // public function restoreTask(int $taskId): mixed
-    // {
-    //     $task = $this->model->withTrashed()->find($taskId);
-    //     return $task ? $task->restore() : null;
-    // }
 }

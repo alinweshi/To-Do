@@ -4,16 +4,12 @@ namespace App\Http\Controllers\Api;
 
 
 use App\Models\Task;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TaskResource;
-use Illuminate\Support\Facades\Auth;
 use App\Interfaces\BaseRepositoryInterface;
-use App\Interfaces\TaskRepositoryInterface;
 use App\Http\Requests\Tasks\CreateTaskRequest;
-use App\Interfaces\BaseReadRepositoryInterface;
-use App\Interfaces\BaseWriteRepositoryInterface;
+use App\Http\Requests\Tasks\RestoreTaskRequest;
+
 
 class TaskController extends Controller
 {
@@ -50,11 +46,18 @@ class TaskController extends Controller
         return $deleted ? response()->json(['message' => 'Task deleted successfully']) :
             response()->json(['error' => 'Task not found'], 404);
     }
-    // public function restore($id)
-    // {
-    //     $restored = $this->taskRepository->restoreTask($id);
 
-    //     return $restored ? response()->json(['message' => 'Task restored successfully']) :
-    //         response()->json(['error' => 'Task not found'], 404);
-    // }
+    public function restore(RestoreTaskRequest $request)
+    {
+        $validated = $request->validated();
+
+        // Attempt to restore the task
+        $restored = $this->taskRepository->restore($validated['task_id']);
+
+        if (!$restored) {
+            return response()->json(['success' => false, 'message' => 'Task not found or not deleted'], 404);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Task restored successfully']);
+    }
 }

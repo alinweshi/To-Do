@@ -36,10 +36,9 @@ interface BaseRepositoryInterface
     /**
      * Restore a soft-deleted task.
      */
-    public function restore(Model $model): bool;
+    public function restore(Model $model);
 
     /**
      * Mark a task as completed.
      */
-    public function complete(Model $model): ?Model;
 }
