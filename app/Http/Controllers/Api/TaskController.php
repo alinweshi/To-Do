@@ -17,8 +17,13 @@ class TaskController extends Controller
 
     public function index()
     {
-        return response()->json($this->taskRepository->getAll());
+        $tasks = cache()->remember('tasks.all', now()->addMinutes(10), function () {
+            return $this->taskRepository->getAll();
+        });
+
+        return response()->json($tasks);
     }
+
 
     public function store(CreateTaskRequest $request) {}
 
