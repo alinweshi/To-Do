@@ -20,7 +20,7 @@ abstract class AbstractModelRepository implements BaseRepositoryInterface
 
     public function getAll(): Collection
     {
-        return $this->model->all();
+        return $this->model->limit(10)->get();
     }
     public function getById(Model $model): ?Model
     {

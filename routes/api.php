@@ -10,6 +10,9 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 Route::prefix('users')->group(function () {
+    Route::get('/user', function (Request $Request) {
+        return $Request->user();
+    });
     Route::post('/register', [UserAuthController::class, "register"]);
     Route::post('/login', [UserAuthController::class, "login"])->name('login');
     Route::post('/logout', [UserAuthController::class, 'logout'])->middleware('auth:sanctum');
