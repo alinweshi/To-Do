@@ -16,4 +16,5 @@ Route::prefix('users')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->apiResource('tasks', TaskController::class);
+Route::post('tasks/restore', [TaskController::class, 'restore'])->middleware("auth:sanctum");
 Route::middleware('auth:sanctum')->apiResource('categories', CategoryController::class);

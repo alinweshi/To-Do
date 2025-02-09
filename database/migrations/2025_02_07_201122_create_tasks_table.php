@@ -24,6 +24,7 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->text('description')->nullable();
             $table->enum('status', ['pending', 'completed', 'failed'])->default('pending');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
