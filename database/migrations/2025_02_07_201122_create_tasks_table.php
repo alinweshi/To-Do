@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
+            $table->text('description')->nullable();
+            $table->enum('status', ['pending', 'completed', 'failed'])->default('pending');
+            $table->dateTime('date');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('category_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')
@@ -22,8 +25,6 @@ return new class extends Migration
             $table->foreign('category_id')->references('id')->on('categories')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->text('description')->nullable();
-            $table->enum('status', ['pending', 'completed', 'failed'])->default('pending');
             $table->softDeletes();
             $table->timestamps();
         });

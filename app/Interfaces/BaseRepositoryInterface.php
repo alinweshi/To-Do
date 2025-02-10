@@ -38,6 +38,10 @@ interface BaseRepositoryInterface
      */
     public function restore(Model $model);
 
+    public function markAsCompleted(Model $model): bool;
+
+    public function getAllTrashed(): collection;
+
     /**
      * Mark a task as completed.
      */

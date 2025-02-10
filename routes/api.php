@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\TaskController;
@@ -18,6 +19,23 @@ Route::prefix('users')->group(function () {
     Route::post('/logout', [UserAuthController::class, 'logout'])->middleware('auth:sanctum');
 });
 
-Route::middleware('auth:sanctum')->apiResource('tasks', TaskController::class);
-Route::post('tasks/restore', [TaskController::class, 'restore'])->middleware("auth:sanctum");
+/*--------------------------------------------------------------------------------------------------------------------*/
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('tasks/trashed', [TaskController::class, 'getAllTrashedTasks'])->name('tasks.trashed');
+    // Route::put('/restore/{task}', [TaskController::class, 'restore'])->name('tasks.restore');
+    // Route::put('/restore/{id}', function ($id) {
+    //     $restored = Task::onlyTrashed()->find($id);
+    //     $restored->restore();
+    // })->name('tasks.restore');
+    // Route::put('/restore/{task}', function (Task $task) {
+    //     $restored = $task->onlyTrashed();
+    //     $restored->restore();
+    // })->name('tasks.restore');
+    Route::put('tasks/restore/{task}', [TaskController::class, "restore"])->name('tasks.restore')->withTrashed();
+
+    Route::apiResource('tasks', TaskController::class);
+});
+/*--------------------------------------------------------------------------------------------------------------------*/
+
+// Route::get('tasks/trashed-tasks', [TaskController::class, 'getAllTrashedTasks'])->middleware("auth:sanctum");
 Route::middleware('auth:sanctum')->apiResource('categories', CategoryController::class);
