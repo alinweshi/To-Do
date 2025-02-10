@@ -43,14 +43,19 @@ abstract class AbstractModelRepository implements BaseRepositoryInterface
         return $model->delete();
     }
 
-    public function restore($taskId): bool
+
+    public function markAsCompleted(Model $model): bool
     {
-        $task = $this->model->onlyTrashed()->find($taskId);
-
-        if (!$task) {
-            return false;
-        }
-
-        return $task->restore();
+        $model->status = 'completed';
+        return $model->save();
+    }
+    public function getAllTrashed(): collection
+    {
+        return $this->model->onlyTrashed()->get();
+    }
+    public function restore(Model $model)
+    {
+        // dd($model);
+        return $model->restore();
     }
 }

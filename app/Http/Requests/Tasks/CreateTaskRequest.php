@@ -26,6 +26,7 @@ class CreateTaskRequest extends CustomFormRequest
         return [
             'title' => 'required|string|min:3|max:255',
             'description' => 'nullable|string|min:5|max:500',
+            'date' => 'nullable|date_format:Y-m-d',
         ];
     }
 }

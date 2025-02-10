@@ -10,7 +10,7 @@ class Task extends Model
 {
     use HasFactory,   SoftDeletes;
 
-    protected $fillable = ['title', 'description', 'user_id', 'category_id', 'status'];
+    protected $fillable = ['title', 'description', 'user_id', 'category_id', 'status', 'date'];
     protected $casts = ['completed' => 'boolean'];
     protected $attributes = [
         'status' => 'pending', // or any default status like 'new', 'open', etc.
